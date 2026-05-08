@@ -78,10 +78,10 @@ jobs:
       - name: Create Release (in this repo)
         uses: softprops/action-gh-release@v3
         with:
-          tag_name: ${{ needs.prepare.outputs.tag }}
-          name: OpenComic-${{ needs.prepare.outputs.tag }}
+          tag_name: ${{ env.LIBVIPS_TAG }}
+          name: ${{ env.LIBVIPS_TAG }}
           body: |
-            ## Automated libvips build
+            ## Automated libvips build (${{ env.LIBVIPS_TAG }})
 
             **Source Repository:** [libvips/build-win64-mxe](https://github.com/libvips/build-win64-mxe)
             **Commit:** https://github.com/ollm/OpenComic/commit/${{ needs.prepare.outputs.source_sha }}
