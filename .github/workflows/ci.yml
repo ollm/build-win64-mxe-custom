@@ -1,7 +1,6 @@
 name: CI
 on:
-  - push
-  - pull_request
+  workflow_dispatch:
 env:
   LIBVIPS_TAG: v8.18.2
 permissions: {}
@@ -48,7 +47,7 @@ jobs:
       - run: ls --recursive
   release:
     needs: [build]
-    if: {{ false }}
+    if: ${{ false }}
     runs-on: ubuntu-latest
 
     permissions:
