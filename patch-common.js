@@ -65,6 +65,6 @@ console.log('----');
 const entries2 = fs.readdirSync('../../', {withFileTypes: true});
 console.log(entries2);
 
-processFile('../build/plugins/all-deps/overrides.mk', replacements);
+processFile('./build/plugins/all-deps/overrides.mk', replacements);
 
-console.log(fs.readdirSync('../build/plugins/all-deps/overrides.mk', 'utf8'));
+console.log(fs.readdirSync('./build/plugins/all-deps/overrides.mk', 'utf8'));
