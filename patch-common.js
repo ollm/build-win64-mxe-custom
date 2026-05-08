@@ -1,5 +1,5 @@
 const fs = require('node:fs');
-const path = require('node:path');
+const p = require('node:path');
 
 const BUILD_FILE_WINDOWS = process.argv[2] || 'build/win.sh';
 
@@ -9,7 +9,7 @@ function walk(dir, callback)
 
 	for(const entry of entries)
 	{
-		const fullPath = path.join(dir, entry.name);
+		const fullPath = p.join(dir, entry.name);
 
 		// Skip .git
 		if(entry.name === '.git')
@@ -52,6 +52,6 @@ replacements.push(
 	}
 );
 
-processFile('build/plugins/all-deps/overrides.mk', replacements);
+processFile('../build/plugins/all-deps/overrides.mk', replacements);
 
-console.log(fs.readdirSync('build/plugins/all-deps/overrides.mk', 'utf8'));
+console.log(fs.readdirSync('../build/plugins/all-deps/overrides.mk', 'utf8'));

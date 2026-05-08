@@ -1,5 +1,6 @@
 name: CI
 on:
+  push:
   workflow_dispatch:
 env:
   LIBVIPS_TAG: v8.18.2
@@ -23,6 +24,7 @@ jobs:
           SHA="$(git -C source rev-parse --short=7 HEAD)"
           echo "source_sha=${SHA}" >> "$GITHUB_OUTPUT"
   build:
+    needs: [prepare]
     permissions:
       contents: read
     runs-on: ubuntu-24.04
