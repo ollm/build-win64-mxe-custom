@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
 env:
   LIBVIPS_TAG: v8.18.2
+  RELEASE_TAG: v8.18.2-2
 permissions: {}
 jobs:
   build:
@@ -29,7 +30,7 @@ jobs:
       - name: Pull base image
         run: docker pull ghcr.io/libvips/build-win64-mxe:latest
       - name: Build
-        run: ./build.sh -r ${{ env.LIBVIPS_TAG }}
+        run: ./build.sh -r ${{ env.LIBVIPS_TAG }} vips-all
       - name: Collect artifacts
         shell: bash
         run: |
@@ -37,7 +38,10 @@ jobs:
           mkdir -p release
 
           find packaging -maxdepth 1 -type f -name "*.zip" | while read -r file; do
-            cp "$file" "release/$(basename "$file")"
+            filename="$(basename "$file")"
+            newname="$(echo "$filename" | sed -E "s/-[0-9a-f]{7,40}-/-${{ env.LIBVIPS_TAG }}-/")"
+
+            cp "$file" "release/$newname"
           done
 
           echo "Artifacts collected:"
@@ -79,8 +83,8 @@ jobs:
       - name: Create Release (in this repo)
         uses: softprops/action-gh-release@v3
         with:
-          tag_name: ${{ env.LIBVIPS_TAG }}
-          name: ${{ env.LIBVIPS_TAG }}
+          tag_name: ${{ env.RELEASE_TAG }}
+          name: ${{ env.RELEASE_TAG }}
           overwrite_files: true
           body: |
             ## Automated libvips build (${{ env.LIBVIPS_TAG }})
