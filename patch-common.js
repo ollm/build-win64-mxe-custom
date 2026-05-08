@@ -16,17 +16,26 @@ function processFile(filePath, replacements)
 		fs.writeFileSync(filePath, updated, 'utf8');
 		console.log(`Updated: ${filePath}`);
 	}
+	else
+	{
+		throw new Error('Not updated')
+	}
 }
 
+// Disable the JPEG XL module
 processFile('./build/plugins/all-deps/overrides.mk', [	{
 	search: /-Dpdfium=disabled\s*\\/g,
 	replace: `-Dpdfium=disabled \\\n    -Djpeg-xl-module=disabled \\`,
 }]);
-console.log(fs.readFileSync('./build/plugins/all-deps/overrides.mk', 'utf8'));
 
-
+// Fix build failures by duplicate symbol
 processFile('./build/overrides.mk', [	{
 	search: /-Dc_link_args=\'\$\(LDFLAGS\)\s*-lntdll\s*-luserenv'\s*\\/g,
 	replace: `-Dc_link_args='$(LDFLAGS) -Wl,--allow-multiple-definition -lntdll -luserenv' \\`,
 }]);
-console.log(fs.readFileSync('./build/overrides.mk', 'utf8'));
+
+// Enable AV1 high bit-depth support
+processFile('./build/aom.mk', [	{
+	search: /AV1_HIGHBITDEPTH=0/g,
+	replace: `AV1_HIGHBITDEPTH=1`,
+}]);

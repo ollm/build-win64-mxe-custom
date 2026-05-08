@@ -1,32 +1,15 @@
 name: CI
 on:
-  push:
+  push: {}
   workflow_dispatch:
 env:
   LIBVIPS_TAG: v8.18.2
 permissions: {}
 jobs:
-  prepare:
-    runs-on: ubuntu-latest
-    outputs:
-      source_sha: ${{ steps.ver.outputs.source_sha }}
-
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          repository: libvips/build-win64-mxe
-          ref: ${{ env.LIBVIPS_TAG }}
-
-      - name: Compute version/tag from source SHA
-        id: ver
-        shell: bash
-        run: |
-          SHA="$(git rev-parse --short=7 HEAD)"
-          echo "source_sha=${SHA}" >> "$GITHUB_OUTPUT"
   build:
-    needs: [prepare]
     permissions:
       contents: read
+      # packages: read
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
@@ -46,11 +29,29 @@ jobs:
       - name: Pull base image
         run: docker pull ghcr.io/libvips/build-win64-mxe:latest
       - name: Build
-        run: ./build.sh -r ${{ env.LIBVIPS_TAG }} -t x86_64-w64-mingw32.shared
-      - run: ls --recursive
+        run: ./build.sh -r ${{ env.LIBVIPS_TAG }}
+      - name: Collect artifacts
+        shell: bash
+        run: |
+
+          mkdir -p release
+
+          find packaging -maxdepth 1 -type f -name "*.zip" | while read -r file; do
+            cp "$file" "release/$(basename "$file")"
+          done
+
+          echo "Artifacts collected:"
+          ls -la release || true
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: libvips
+          path: release/*
+          retention-days: 1
+
   release:
     needs: [build]
-    if: ${{ false }}
     runs-on: ubuntu-latest
 
     permissions:
@@ -80,13 +81,10 @@ jobs:
         with:
           tag_name: ${{ env.LIBVIPS_TAG }}
           name: ${{ env.LIBVIPS_TAG }}
+          overwrite_files: true
           body: |
             ## Automated libvips build (${{ env.LIBVIPS_TAG }})
 
             **Source Repository:** [libvips/build-win64-mxe](https://github.com/libvips/build-win64-mxe)
-            **Commit:** https://github.com/ollm/OpenComic/commit/${{ needs.prepare.outputs.source_sha }}
-
-            ### Changes Since Last Nightly:
-            https://github.com/ollm/OpenComic/compare/${{ needs.prepare.outputs.last_sha }}...${{ needs.prepare.outputs.source_sha }}
           files: final/*
           prerelease: false
