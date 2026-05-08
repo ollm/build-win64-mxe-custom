@@ -67,4 +67,4 @@ console.log(entries2);
 
 processFile('./build/plugins/all-deps/overrides.mk', replacements);
 
-console.log(fs.readdirSync('./build/plugins/all-deps/overrides.mk', 'utf8'));
+console.log(fs.readFileSync('./build/plugins/all-deps/overrides.mk', 'utf8'));
