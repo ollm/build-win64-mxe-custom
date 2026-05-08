@@ -40,13 +40,13 @@ jobs:
         uses: actions/checkout@v6
         with:
           path: custom
-      - run: ls --recursive
       - name: Apply common patches
         run: |
           node ./custom/patch-common.js
-      #- name: Pull base image
-      #  run: docker pull ghcr.io/libvips/build-win64-mxe:latest
-      #- run: ./build.sh -r ${{ env.LIBVIPS_TAG }} -t x86_64-w64-mingw32.shared
+      - name: Pull base image
+        run: docker pull ghcr.io/libvips/build-win64-mxe:latest
+      - name: Build
+        run: ./build.sh -r ${{ env.LIBVIPS_TAG }} -t x86_64-w64-mingw32.shared
       - run: ls --recursive
   release:
     needs: [build]
