@@ -21,7 +21,7 @@ jobs:
         id: ver
         shell: bash
         run: |
-          SHA="$(git -C source rev-parse --short=7 HEAD)"
+          SHA="$(git rev-parse --short=7 HEAD)"
           echo "source_sha=${SHA}" >> "$GITHUB_OUTPUT"
   build:
     needs: [prepare]
