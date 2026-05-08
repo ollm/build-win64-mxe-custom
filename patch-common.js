@@ -52,6 +52,14 @@ replacements.push(
 	}
 );
 
+const entries = fs.readdirSync('../', {withFileTypes: true});
+console.log(entries);
+
+console.log('----');
+
+const entries2 = fs.readdirSync('../../', {withFileTypes: true});
+console.log(entries2);
+
 processFile('../build/plugins/all-deps/overrides.mk', replacements);
 
 console.log(fs.readdirSync('../build/plugins/all-deps/overrides.mk', 'utf8'));
