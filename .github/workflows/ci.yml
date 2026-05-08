@@ -1,0 +1,29 @@
+name: CI
+on:
+  - push
+  - pull_request
+env:
+  LIBVIPS_TAG: v8.18.2
+permissions: {}
+jobs:
+  lint:
+    permissions:
+      contents: read
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          repository: libvips/build-win64-mxe
+          ref: ${{ env.LIBVIPS_TAG }}
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+      - name: Checkout custom repository
+        uses: actions/checkout@v6
+        with:
+          path: custom
+      #- name: Apply common patches
+      #  run: |
+      #    node ./custom/patch-common.js
+      # CUSTOM - END
+      - run: ./build.sh -r ${{ env.LIBVIPS_TAG }} -t x86_64-w64-mingw32.shared
