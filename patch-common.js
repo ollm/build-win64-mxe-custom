@@ -52,6 +52,11 @@ replacements.push(
 	}
 );
 
+const entries0 = fs.readdirSync('./', {withFileTypes: true});
+console.log(entries0);
+
+console.log('----');
+
 const entries = fs.readdirSync('../', {withFileTypes: true});
 console.log(entries);
 
