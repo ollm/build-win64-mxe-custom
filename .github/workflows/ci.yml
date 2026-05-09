@@ -38,10 +38,7 @@ jobs:
           mkdir -p release
 
           find packaging -maxdepth 1 -type f -name "*.zip" | while read -r file; do
-            filename="$(basename "$file")"
-            newname="$(echo "$filename" | sed -E "s/-[0-9a-f]{7,40}-/-${{ env.LIBVIPS_TAG }}-/")"
-
-            cp "$file" "release/$newname"
+            cp "$file" "release/$(basename "$file")"
           done
 
           echo "Artifacts collected:"

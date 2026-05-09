@@ -18,7 +18,7 @@ function processFile(filePath, replacements)
 	}
 	else
 	{
-		throw new Error('Not updated')
+		throw new Error('Not updated');
 	}
 }
 
