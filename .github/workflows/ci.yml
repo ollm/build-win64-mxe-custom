@@ -1,6 +1,6 @@
 name: CI
 on:
-  push: {}
+  # push: {}
   workflow_dispatch:
 env:
   LIBVIPS_TAG: v8.18.2
