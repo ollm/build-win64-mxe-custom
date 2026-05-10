@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 env:
   LIBVIPS_TAG: v8.18.2
-  RELEASE_TAG: v8.18.2-2
+  RELEASE_TAG: v8.18.2-3
 permissions: {}
 jobs:
   build:
@@ -30,7 +30,7 @@ jobs:
       - name: Pull base image
         run: docker pull ghcr.io/libvips/build-win64-mxe:latest
       - name: Build
-        run: ./build.sh -r ${{ env.LIBVIPS_TAG }} vips-all
+        run: ./build.sh -r ${{ env.LIBVIPS_TAG }} -t x86_64-w64-mingw32.static -t i686-w64-mingw32.static -t aarch64-w64-mingw32.static vips-web
       - name: Collect artifacts
         shell: bash
         run: |

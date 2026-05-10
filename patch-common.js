@@ -18,14 +18,72 @@ function processFile(filePath, replacements)
 	}
 	else
 	{
-		throw new Error('Not updated');
+		throw new Error('Not updated: ' + filePath);
 	}
 }
 
-// Disable the JPEG XL module
-processFile('./build/plugins/all-deps/overrides.mk', [	{
-	search: /-Dpdfium=disabled\s*\\/g,
-	replace: `-Dpdfium=disabled \\\n    -Djpeg-xl-module=disabled \\`,
+// Enable JPEG XL
+processFile('./build/plugins/web-deps/overrides.mk', [	{
+	search: /-Djpeg-xl=disabled/g,
+	replace: `-Djpeg-xl-module=disabled`,
+}]);
+
+// Enable OpenJPEG
+processFile('./build/plugins/web-deps/overrides.mk', [	{
+	search: /-Dopenjpeg=disabled\s*\\/g,
+	replace: ``,
+}]);
+
+// Add libjxl to vips.mk
+processFile('./build/vips.mk', [	{
+	search: /libimagequant highway cgif uhdr/g,
+	replace: `libimagequant highway cgif uhdr libjxl`,
+}]);
+
+// Extracted from: https://github.com/libvips/build-win64-mxe/pull/87/changes
+// Tarball: https://github.com/libjxl/libjxl/tarball/v0.11.2
+/*processFile('./build/libjxl.mk', [	{
+	search: /\$\(PKG\)_VERSION[\s\S]*\$\(PKG\)_PATCHES/g,
+	replace: `$(PKG)_VERSION  := 0.11.2
+$(PKG)_CHECKSUM := 893ff1d9203ea2e211240c99ae5924f8b55fbcffb1339cae627f9acac5d7ec5c
+$(PKG)_PATCHES`,
+}]);*/
+
+// Extracted from: https://github.com/libvips/build-win64-mxe/pull/87/changes
+// Tarball: https://github.com/libjxl/libjxl/tarball/c0667f8efb1b533089192f7783bd2eee78d787ac
+processFile('./build/libjxl.mk', [	{
+	search: /\$\(PKG\)_VERSION[\s\S]*\$\(PKG\)_DEPS/g,
+	replace: `$(PKG)_VERSION  := c0667f8
+$(PKG)_CHECKSUM := 72a31652d1d9567800c0e4e6b22265c6474e4931543638826901f2db1fc00fb9
+$(PKG)_PATCHES  := $(realpath $(sort $(wildcard $(dir $(lastword $(MAKEFILE_LIST)))/patches/$(PKG)-[0-9]*.patch)))
+$(PKG)_GH_CONF  := libjxl/libjxl/branches/main
+$(PKG)_DEPS`,
+}]);
+
+// Extracted from: https://github.com/libvips/build-win64-mxe/pull/87/changes
+processFile('./build/libjxl.mk', [	{
+	search: /-DJPEGXL_ENABLE_TRANSCODE_JPEG=OFF\s*\\/g,
+	replace: `-DJPEGXL_ENABLE_TRANSCODE_JPEG=OFF \\
+        $(if $(call seq,aarch64,$(PROCESSOR)), \\
+            -DJPEGXL_ENABLE_HWY_SVE2_128=OFF \\
+            -DJPEGXL_ENABLE_HWY_SVE_256=OFF \\
+            -DJPEGXL_ENABLE_HWY_SVE2=OFF \\
+            -DJPEGXL_ENABLE_HWY_SVE=OFF \\
+            -DJPEGXL_ENABLE_HWY_NEON_BF16=OFF \\
+            -DJPEGXL_ENABLE_HWY_NEON=OFF \\
+            -DJPEGXL_ENABLE_HWY_NEON_WITHOUT_AES=ON \\
+        $(else), \\
+            -DJPEGXL_ENABLE_HWY_AVX10_2=OFF \\
+            -DJPEGXL_ENABLE_HWY_AVX3_SPR=OFF \\
+            -DJPEGXL_ENABLE_HWY_AVX3_ZEN4=OFF \\
+            -DJPEGXL_ENABLE_HWY_AVX3_DL=OFF \\
+            -DJPEGXL_ENABLE_HWY_AVX3=OFF \\
+            -DJPEGXL_ENABLE_HWY_AVX2=ON \\
+            -DJPEGXL_ENABLE_HWY_SSE4=OFF \\
+            -DJPEGXL_ENABLE_HWY_SSSE3=OFF \\
+            -DJPEGXL_ENABLE_HWY_SSE2=ON) \\
+        -DJPEGXL_ENABLE_HWY_EMU128=OFF \\
+        -DJPEGXL_ENABLE_HWY_SCALAR=OFF \\`,
 }]);
 
 // Fix build failures by duplicate symbol
