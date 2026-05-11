@@ -30,14 +30,14 @@ processFile('./build/plugins/web-deps/overrides.mk', [	{
 
 // Enable OpenJPEG
 processFile('./build/plugins/web-deps/overrides.mk', [	{
-	search: /-Dopenjpeg=disabled\s*\\/g,
-	replace: ``,
+	search: /-Dopenjpeg=disabled/g,
+	replace: `-Dopenjpeg=enabled`,
 }]);
 
 // Add libjxl to vips.mk
 processFile('./build/vips.mk', [	{
 	search: /libimagequant highway cgif uhdr/g,
-	replace: `libimagequant highway cgif uhdr libjxl`,
+	replace: `libimagequant highway cgif uhdr libjxl openjpeg`,
 }]);
 
 // Extracted from: https://github.com/libvips/build-win64-mxe/pull/87/changes
