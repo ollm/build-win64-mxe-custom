@@ -1,7 +1,7 @@
 const fs = require('node:fs');
 
 // Apply replacements to a file
-function processFile(filePath, replacements)
+function processFile(filePath, replacements, ignoreMissing = false)
 {
 	const content = fs.readFileSync(filePath, 'utf8');
 	let updated = content;
@@ -18,7 +18,8 @@ function processFile(filePath, replacements)
 	}
 	else
 	{
-		throw new Error('Not updated: ' + filePath);
+		if(!ignoreMissing)
+			throw new Error('Not updated: ' + filePath);
 	}
 }
 
@@ -96,4 +97,4 @@ processFile('./build/overrides.mk', [	{
 processFile('./build/aom.mk', [	{
 	search: /AV1_HIGHBITDEPTH=0/g,
 	replace: `AV1_HIGHBITDEPTH=1`,
-}]);
+}], true);
