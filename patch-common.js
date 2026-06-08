@@ -92,7 +92,7 @@ processFile('./build/overrides.mk', [	{
 	replace: `-Dc_link_args='$(LDFLAGS) -Wl,--allow-multiple-definition -lntdll -luserenv' \\`,
 }]);
 
-// Enable AV1 high bit-depth support
+// Enable AV1 high bit-depth support (Technically no longer necessary since https://github.com/libvips/build-win64-mxe/pull/96)
 processFile('./build/aom.mk', [	{
 	search: /AV1_HIGHBITDEPTH=0/g,
 	replace: `AV1_HIGHBITDEPTH=1`,

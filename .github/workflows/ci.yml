@@ -3,8 +3,8 @@ on:
   # push: {}
   workflow_dispatch:
 env:
-  LIBVIPS_TAG: v8.18.2
-  RELEASE_TAG: v8.18.2-4
+  LIBVIPS_TAG: v8.18.3-rc1
+  RELEASE_TAG: v8.18.3-rc1
 permissions: {}
 jobs:
   build:
