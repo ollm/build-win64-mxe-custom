@@ -89,8 +89,8 @@ processFile('./build/libjxl.mk', [	{
 
 // Fix build failures by duplicate symbol
 processFile('./build/overrides.mk', [	{
-	search: /-Dc_link_args=\'\$\(LDFLAGS\)\s*-lntdll\s*-luserenv'\s*\\/g,
-	replace: `-Dc_link_args='$(LDFLAGS) -Wl,--allow-multiple-definition -lntdll -luserenv' \\`,
+	search: /-Dc_link_args=\'\$\(LDFLAGS\)\s*-lntdll\s*-luserenv\s*-lsynchronization'\s*\\/g,
+	replace: `-Dc_link_args='$(LDFLAGS) -Wl,--allow-multiple-definition -lntdll -luserenv -lsynchronization' \\`,
 }]);
 
 // Enable AV1 high bit-depth support (Technically no longer necessary since https://github.com/libvips/build-win64-mxe/pull/96)
